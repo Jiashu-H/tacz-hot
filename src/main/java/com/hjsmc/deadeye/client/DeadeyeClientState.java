@@ -26,6 +26,8 @@ public final class DeadeyeClientState {
     /** 0..1 fade animation progress shared by the vignette and the eye icon. */
     private static float fadeProgress = 0.0F;
     private static long lastFadeMs = 0L;
+    /** Server-synced own energy, display-only. */
+    private static float energyPercent = 100.0F;
 
     private DeadeyeClientState() {
     }
@@ -40,7 +42,16 @@ public final class DeadeyeClientState {
     public static void reset() {
         active = false;
         fadeProgress = 0.0F;
+        energyPercent = 100.0F;
         setMsPerTick(NORMAL_MS_PER_TICK);
+    }
+
+    public static void setEnergy(float energy) {
+        energyPercent = Mth.clamp(energy, 0.0F, 100.0F);
+    }
+
+    public static float energyPercent() {
+        return energyPercent;
     }
 
     public static boolean isActive() {

@@ -33,12 +33,43 @@ public final class DeadeyeClothConfigScreen {
         general.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.slowdownRate"),
                         (int) Math.round(DeadeyeConfig.SLOWDOWN_RATE.get() * 100.0D), 10, 100)
-                .setDefaultValue(50)
+                .setDefaultValue(25)
                 .setTextGetter(value -> Component.literal(value + "%"))
                 .setTooltip(
                         Component.translatable("config.deadeye.slowdownRate.tooltip1"),
                         Component.translatable("config.deadeye.slowdownRate.tooltip2"))
                 .setSaveConsumer(value -> DeadeyeConfig.SLOWDOWN_RATE.set(value / 100.0D))
+                .build());
+        general.addEntry(entries.startIntSlider(
+                        Component.translatable("config.deadeye.energyDuration"),
+                        (int) Math.round(DeadeyeConfig.ENERGY_DURATION_SECONDS.get()), 1, 60)
+                .setDefaultValue(5)
+                .setTextGetter(value -> Component.literal(value + "s"))
+                .setTooltip(
+                        Component.translatable("config.deadeye.energyDuration.tooltip"),
+                        Component.translatable("config.deadeye.slowdownRate.tooltip2"))
+                .setSaveConsumer(value -> DeadeyeConfig.ENERGY_DURATION_SECONDS.set((double) value))
+                .build());
+        general.addEntry(entries.startIntSlider(
+                        Component.translatable("config.deadeye.energyRecoveryDelay"),
+                        (int) Math.round(DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.get()), 0, 30)
+                .setDefaultValue(2)
+                .setTextGetter(value -> Component.literal(value + "s"))
+                .setTooltip(
+                        Component.translatable("config.deadeye.energyRecoveryDelay.tooltip"),
+                        Component.translatable("config.deadeye.slowdownRate.tooltip2"))
+                .setSaveConsumer(value -> DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.set((double) value))
+                .build());
+        general.addEntry(entries.startDoubleField(
+                        Component.translatable("config.deadeye.energyRecoveryRate"),
+                        DeadeyeConfig.ENERGY_RECOVERY_PER_TICK.get())
+                .setDefaultValue(2.5D)
+                .setMin(0.01D)
+                .setMax(100.0D)
+                .setTooltip(
+                        Component.translatable("config.deadeye.energyRecoveryRate.tooltip"),
+                        Component.translatable("config.deadeye.slowdownRate.tooltip2"))
+                .setSaveConsumer(DeadeyeConfig.ENERGY_RECOVERY_PER_TICK::set)
                 .build());
 
         ConfigCategory visuals = builder.getOrCreateCategory(Component.translatable("config.deadeye.category.visuals"));
@@ -75,7 +106,7 @@ public final class DeadeyeClothConfigScreen {
         visuals.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.eyeSize"),
                         DeadeyeClientConfig.eyeSize(), 12, 64)
-                .setDefaultValue(24)
+                .setDefaultValue(32)
                 .setTextGetter(value -> Component.literal(value + "px"))
                 .setTooltip(Component.translatable("config.deadeye.eyeSize.tooltip"))
                 .setSaveConsumer(DeadeyeClientConfig.EYE_SIZE::set)
@@ -83,10 +114,33 @@ public final class DeadeyeClothConfigScreen {
         visuals.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.eyeVerticalOffset"),
                         (int) Math.round(DeadeyeClientConfig.eyeVerticalOffset() * 100.0D), 0, 45)
-                .setDefaultValue(12)
+                .setDefaultValue(13)
                 .setTextGetter(value -> Component.literal(value + "%"))
                 .setTooltip(Component.translatable("config.deadeye.eyeVerticalOffset.tooltip"))
                 .setSaveConsumer(value -> DeadeyeClientConfig.EYE_VERTICAL_OFFSET.set(value / 100.0D))
+                .build());
+        visuals.addEntry(entries.startBooleanToggle(
+                        Component.translatable("config.deadeye.energyTextEnabled"),
+                        DeadeyeClientConfig.energyTextEnabled())
+                .setDefaultValue(true)
+                .setTooltip(Component.translatable("config.deadeye.energyTextEnabled.tooltip"))
+                .setSaveConsumer(DeadeyeClientConfig.ENERGY_TEXT_ENABLED::set)
+                .build());
+        visuals.addEntry(entries.startIntSlider(
+                        Component.translatable("config.deadeye.energyTextOffsetX"),
+                        DeadeyeClientConfig.energyTextOffsetX(), -64, 64)
+                .setDefaultValue(4)
+                .setTextGetter(value -> Component.literal(value + "px"))
+                .setTooltip(Component.translatable("config.deadeye.energyTextOffsetX.tooltip"))
+                .setSaveConsumer(DeadeyeClientConfig.ENERGY_TEXT_OFFSET_X::set)
+                .build());
+        visuals.addEntry(entries.startIntSlider(
+                        Component.translatable("config.deadeye.energyTextOffsetY"),
+                        DeadeyeClientConfig.energyTextOffsetY(), -64, 64)
+                .setDefaultValue(0)
+                .setTextGetter(value -> Component.literal(value + "px"))
+                .setTooltip(Component.translatable("config.deadeye.energyTextOffsetY.tooltip"))
+                .setSaveConsumer(DeadeyeClientConfig.ENERGY_TEXT_OFFSET_Y::set)
                 .build());
 
         return builder.build();

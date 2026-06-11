@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,13 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
     public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         float alpha = DeadeyeClientState.updateVignetteAlpha();
         float progress = DeadeyeClientState.fadeProgress();
-        if (progress < 0.004F) {
+        float energy = DeadeyeClientState.energyPercent();
+        boolean showEffects = progress >= 0.004F;
+        // While energy is regenerating the percentage stays on screen so the
+        // player can watch it refill; once full it follows the eye's fade.
+        boolean showEnergyText = DeadeyeClientConfig.energyTextEnabled()
+                && (energy < 99.95F || showEffects);
+        if (!showEffects && !showEnergyText) {
             return;
         }
 
@@ -46,11 +53,14 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
 
-        if (alpha >= 0.004F) {
+        if (showEffects && alpha >= 0.004F) {
             renderVignette(guiGraphics, screenWidth, screenHeight, r, g, b, alpha);
         }
-        if (DeadeyeClientConfig.eyeEnabled()) {
+        if (showEffects && DeadeyeClientConfig.eyeEnabled()) {
             renderEye(guiGraphics, screenWidth, screenHeight, r, g, b, progress);
+        }
+        if (showEnergyText) {
+            renderEnergyText(gui, guiGraphics, screenWidth, screenHeight, rgb, progress, energy);
         }
 
         RenderSystem.depthMask(true);
@@ -100,5 +110,27 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
         guiGraphics.blit(EYE_TEXTURE, x, y, size, size, 0.0F, 0.0F,
                 EYE_TEXTURE_SIZE, EYE_TEXTURE_SIZE, EYE_TEXTURE_SIZE, EYE_TEXTURE_SIZE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    /**
+     * Energy percentage beside the eye icon, in the same color. Anchored to
+     * the eye's rectangle (even if the eye itself is disabled), offset by the
+     * configured pixels.
+     */
+    private static void renderEnergyText(ForgeGui gui, GuiGraphics guiGraphics, int screenWidth, int screenHeight,
+                                         int rgb, float progress, float energy) {
+        float textAlpha = energy < 99.95F ? 0.9F : 0.9F * progress;
+        int alphaByte = (int) (textAlpha * 255.0F);
+        if (alphaByte < 5) {
+            return; // the vanilla font renders alpha < 4/255 as fully opaque
+        }
+        int size = DeadeyeClientConfig.eyeSize();
+        int eyeX = (screenWidth - size) / 2;
+        int eyeY = (int) (screenHeight * DeadeyeClientConfig.eyeVerticalOffset());
+        Font font = gui.getFont();
+        int x = eyeX + size + DeadeyeClientConfig.energyTextOffsetX();
+        int y = eyeY + (size - font.lineHeight) / 2 + DeadeyeClientConfig.energyTextOffsetY();
+        String text = Math.round(energy) + "%";
+        guiGraphics.drawString(font, text, x, y, (alphaByte << 24) | (rgb & 0xFFFFFF), true);
     }
 }

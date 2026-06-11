@@ -49,8 +49,20 @@ public final class TimeFlowController {
         return !ACTIVE_HOLDERS.isEmpty();
     }
 
+    public static boolean isHolding(UUID playerId) {
+        return ACTIVE_HOLDERS.contains(playerId);
+    }
+
+    /** The rate currently applied (1.0 when inactive). */
+    public static float currentRate() {
+        return activeRate;
+    }
+
     /** Called on the server thread when a player presses or releases the key. */
     public static void setHolding(ServerPlayer player, boolean holding) {
+        if (holding && !DeadeyeEnergyManager.canActivate(player)) {
+            return; // out of energy
+        }
         boolean wasActive = isActive();
         if (holding) {
             ACTIVE_HOLDERS.add(player.getUUID());

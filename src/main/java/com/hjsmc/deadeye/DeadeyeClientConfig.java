@@ -20,6 +20,10 @@ public final class DeadeyeClientConfig {
     public static final ForgeConfigSpec.IntValue EYE_SIZE;
     public static final ForgeConfigSpec.DoubleValue EYE_VERTICAL_OFFSET;
 
+    public static final ForgeConfigSpec.BooleanValue ENERGY_TEXT_ENABLED;
+    public static final ForgeConfigSpec.IntValue ENERGY_TEXT_OFFSET_X;
+    public static final ForgeConfigSpec.IntValue ENERGY_TEXT_OFFSET_Y;
+
     public static final int DEFAULT_COLOR_RGB = 0x1A40E6;
 
     // Memoized hex parse so the overlay can query per frame for free.
@@ -57,12 +61,29 @@ public final class DeadeyeClientConfig {
                 .comment(
                         "Size of the eye icon in GUI-scaled pixels.",
                         "眼睛图案的大小（GUI 缩放后的像素）。")
-                .defineInRange("size", 24, 12, 64);
+                .defineInRange("size", 32, 12, 64);
         EYE_VERTICAL_OFFSET = builder
                 .comment(
                         "Vertical position of the eye icon's top edge, as a fraction of the screen height from the top.",
                         "眼睛图案顶边的纵向位置，按屏幕高度的比例从顶部往下计算。")
-                .defineInRange("verticalOffset", 0.12D, 0.0D, 0.45D);
+                .defineInRange("verticalOffset", 0.13D, 0.0D, 0.45D);
+        builder.pop();
+        builder.push("energy");
+        ENERGY_TEXT_ENABLED = builder
+                .comment(
+                        "Show the energy percentage text beside the eye icon.",
+                        "是否在眼睛图案旁显示能量百分比数值。")
+                .define("showText", true);
+        ENERGY_TEXT_OFFSET_X = builder
+                .comment(
+                        "Horizontal offset of the energy percentage text from the eye icon's right edge (GUI pixels, negative moves left).",
+                        "能量百分比文本相对眼睛图案右缘的横向偏移（GUI 像素，负值向左）。")
+                .defineInRange("textOffsetX", 4, -128, 128);
+        ENERGY_TEXT_OFFSET_Y = builder
+                .comment(
+                        "Vertical offset of the energy percentage text from the eye icon's vertical center (GUI pixels, negative moves up).",
+                        "能量百分比文本相对眼睛图案竖直中心的纵向偏移（GUI 像素，负值向上）。")
+                .defineInRange("textOffsetY", 0, -128, 128);
         builder.pop();
         SPEC = builder.build();
     }
@@ -105,5 +126,17 @@ public final class DeadeyeClientConfig {
 
     public static float eyeVerticalOffset() {
         return (float) (double) EYE_VERTICAL_OFFSET.get();
+    }
+
+    public static boolean energyTextEnabled() {
+        return ENERGY_TEXT_ENABLED.get();
+    }
+
+    public static int energyTextOffsetX() {
+        return ENERGY_TEXT_OFFSET_X.get();
+    }
+
+    public static int energyTextOffsetY() {
+        return ENERGY_TEXT_OFFSET_Y.get();
     }
 }

@@ -9,7 +9,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import java.util.Optional;
 
 public final class DeadeyeNetwork {
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
 
     /**
      * The server requires matching clients (an unmodded client would desync
@@ -38,6 +38,11 @@ public final class DeadeyeNetwork {
                 ClientboundDeadeyeStatePacket::encode,
                 ClientboundDeadeyeStatePacket::decode,
                 ClientboundDeadeyeStatePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(id++, ClientboundDeadeyeEnergyPacket.class,
+                ClientboundDeadeyeEnergyPacket::encode,
+                ClientboundDeadeyeEnergyPacket::decode,
+                ClientboundDeadeyeEnergyPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 }
