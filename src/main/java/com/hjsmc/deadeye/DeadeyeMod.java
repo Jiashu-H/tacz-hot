@@ -32,7 +32,7 @@ public class DeadeyeMod {
 
         // In-game config screen, available from the mod list when the optional
         // Cloth Config API is installed. The guard keeps cloth (and our screen
-        // class) from ever being classloaded on servers or without cloth.
+        // clss) from ever being classloaded on servers or without cloth.
         if (FMLEnvironment.dist.isClient() && ModList.get().isLoaded("cloth_config")) {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory(
