@@ -3,3 +3,10 @@
 # are changed when only line endings change.
 src/generated/**/.cache/cache text eol=lf
 src/generated/**/*.json text eol=lf
+
+# Build-critical: the wrapper script must stay LF or Linux/macOS clones
+# fail with "bad interpreter"; .bat stays CRLF for cmd.exe.
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
+*.png binary

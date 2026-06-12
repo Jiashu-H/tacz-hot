@@ -56,11 +56,24 @@
 
 ## 构建
 
+**命令行打包**只需 JDK 21；**在 IDEA 里开发**还需要装一个 JDK 17——ForgeGradle 为 1.20.1 准备开发环境（反编译 Minecraft、附加源码）的内部步骤固定使用 Java 17 工具链，与模组本体用 21 编译互不冲突，两个都要在。
+
+缺哪个 JDK 时，Gradle 会尝试自动下载（foojay → Adoptium 的 GitHub Release），**国内网络下经常失败**，报错形如 `NoToolchainAvailableException ... Could not HEAD 'https://github.com/adoptium/temurin17-binaries/...'`。建议直接从清华镜像手动安装，解压到 `%USERPROFILE%\.jdks\` 即可被 Gradle 与 IDEA 自动识别：
+
+- JDK 17：<https://mirrors.tuna.tsinghua.edu.cn/Adoptium/17/jdk/x64/windows/>
+- JDK 21：<https://mirrors.tuna.tsinghua.edu.cn/Adoptium/21/jdk/x64/windows/>
+
 ```bash
-# 需要 JDK 21（Windows 下示例）
+# 命令行构建（Windows 下示例）
 JAVA_HOME="C:/Program Files/Eclipse Adoptium/jdk-21.0.11.10-hotspot" ./gradlew build
 # 产物：build/libs/deadeye-1.1.0.jar
 ```
+
+注意事项：
+
+- 首次构建/IDEA 首次 sync 需要下载并处理 Minecraft 本体，**5~15 分钟无输出属正常**，不要中途取消——反复中断会留下半成品缓存，导致后续报 `Start.java: 程序包net.minecraft.client.main不存在` 之类的连锁错误（删除项目下 `build` 目录后完整跑一次即可恢复）。
+- IDEA 的 Gradle JVM（设置 → 构建工具 → Gradle）请选 **21**：本项目的 Gradle 8.8 最高只支持在 Java 22 上运行，被 IDEA 默认成更新的 JDK（如 25）会直接同步失败。
+- 产物 jar 为 Java 21 字节码：游戏客户端需用 Java 21+ 运行（原版 1.20.1 启动器默认带 Java 17，需在启动器中改 Java 路径）。
 
 ---
 
