@@ -46,7 +46,7 @@
 | `eye.verticalOffset` | 眼睛距顶部高度比例 | `0.13` | 0.0 ~ 0.45 |
 | `energy.showText` | 是否显示能量百分比数值 | `true` | — |
 | `energy.textOffsetX` | 能量数值相对眼睛右缘的横向偏移（像素） | `4` | -128 ~ 128 |
-| `energy.textOffsetY` | 能量数值相对眼睛竖直中心的纵向偏移（像素） | `0` | -128 ~ 128 |
+| `energy.textOffsetY` | 能量数值相对眼睛竖直中心的纵向偏移（像素） | `1` | -128 ~ 128 |
 
 装有 Cloth Config 时：**模组列表 → Deadeye → 配置**，含颜色取色框与滑条，保存即时生效。眼睛贴图（`textures/gui/deadeye_eye.png`）为白色+透明通道、运行时按配置颜色染色，可被资源包覆盖；生成器源码见 `tools/EyeTextureGen.java`。
 

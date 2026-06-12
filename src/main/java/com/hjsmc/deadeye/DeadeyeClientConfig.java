@@ -83,7 +83,7 @@ public final class DeadeyeClientConfig {
                 .comment(
                         "Vertical offset of the energy percentage text from the eye icon's vertical center (GUI pixels, negative moves up).",
                         "能量百分比文本相对眼睛图案竖直中心的纵向偏移（GUI 像素，负值向上）。")
-                .defineInRange("textOffsetY", 0, -128, 128);
+                .defineInRange("textOffsetY", 1, -128, 128);
         builder.pop();
         SPEC = builder.build();
     }

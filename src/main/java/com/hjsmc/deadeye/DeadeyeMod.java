@@ -4,7 +4,6 @@ import com.hjsmc.deadeye.client.DeadeyeClothConfigScreen;
 import com.hjsmc.deadeye.network.DeadeyeNetwork;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,7 +33,7 @@ public class DeadeyeMod {
         // Cloth Config API is installed. The guard keeps cloth (and our screen
         // clss) from ever being classloaded on servers or without cloth.
         if (FMLEnvironment.dist.isClient() && ModList.get().isLoaded("cloth_config")) {
-            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+            context.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory(
                             (minecraft, parent) -> DeadeyeClothConfigScreen.create(parent)));
         }

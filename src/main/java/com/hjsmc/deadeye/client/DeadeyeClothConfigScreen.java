@@ -137,7 +137,7 @@ public final class DeadeyeClothConfigScreen {
         visuals.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.energyTextOffsetY"),
                         DeadeyeClientConfig.energyTextOffsetY(), -64, 64)
-                .setDefaultValue(0)
+                .setDefaultValue(1)
                 .setTextGetter(value -> Component.literal(value + "px"))
                 .setTooltip(Component.translatable("config.deadeye.energyTextOffsetY.tooltip"))
                 .setSaveConsumer(DeadeyeClientConfig.ENERGY_TEXT_OFFSET_Y::set)
