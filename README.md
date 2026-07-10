@@ -80,4 +80,4 @@ JAVA_HOME="C:/Program Files/Eclipse Adoptium/jdk-21.0.11.10-hotspot" ./gradlew b
 
 ---
 
-*本模组的分析、设计与代码主要由 Anthropic 的 **Claude（Fable 5）** 编写完成。*
+*本模组的分析、设计与代码主要由 **Claude（Fable 5）** & **Codex（GPT 5.6 Sol）** 编写完成。*
