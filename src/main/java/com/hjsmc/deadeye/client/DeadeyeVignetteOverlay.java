@@ -35,10 +35,10 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
         float progress = DeadeyeClientState.fadeProgress();
         float energy = DeadeyeClientState.energyPercent();
         boolean showEffects = progress >= 0.004F;
-        // While energy is regenerating the percentage stays on screen so the
-        // player can watch it refill; once full it follows the eye's fade.
-        boolean showEnergyText = DeadeyeClientConfig.energyTextEnabled()
-                && (energy < 99.95F || showEffects);
+        // Energy text remains visible while recharging, but is hidden at full
+        // energy even while the vignette and eye are active.
+        boolean showEnergyText = DeadeyeHudRules.shouldShowEnergyText(
+                DeadeyeClientConfig.energyTextEnabled(), energy);
         if (!showEffects && !showEnergyText) {
             return;
         }
@@ -60,7 +60,7 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
             renderEye(guiGraphics, screenWidth, screenHeight, r, g, b, progress);
         }
         if (showEnergyText) {
-            renderEnergyText(gui, guiGraphics, screenWidth, screenHeight, rgb, progress, energy);
+            renderEnergyText(gui, guiGraphics, screenWidth, screenHeight, rgb, energy);
         }
 
         RenderSystem.depthMask(true);
@@ -118,9 +118,8 @@ public final class DeadeyeVignetteOverlay implements IGuiOverlay {
      * configured pixels.
      */
     private static void renderEnergyText(ForgeGui gui, GuiGraphics guiGraphics, int screenWidth, int screenHeight,
-                                         int rgb, float progress, float energy) {
-        float textAlpha = energy < 99.95F ? 0.9F : 0.9F * progress;
-        int alphaByte = (int) (textAlpha * 255.0F);
+                                         int rgb, float energy) {
+        int alphaByte = (int) (0.9F * 255.0F);
         if (alphaByte < 5) {
             return; // the vanilla font renders alpha < 4/255 as fully opaque
         }

@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 @Mod.EventBusSubscriber(modid = DeadeyeMod.MODID)
 public final class DeadeyeEnergyManager {
-    public static final float MAX_ENERGY = 100.0F;
+    public static final float MAX_ENERGY = DeadeyeEnergyRules.MAX_ENERGY;
     private static final float NORMAL_MS_PER_TICK = 50.0F;
 
     private static final class State {
@@ -47,7 +47,8 @@ public final class DeadeyeEnergyManager {
 
     /** Whether the player has energy left to start (or keep) slowing time. */
     public static boolean canActivate(ServerPlayer player) {
-        return state(player).energy > 0.0F;
+        return DeadeyeEnergyRules.canActivate(
+                state(player).energy, DeadeyeConfig.INFINITE_ENERGY.get());
     }
 
     public static float energyOf(ServerPlayer player) {
@@ -66,14 +67,19 @@ public final class DeadeyeEnergyManager {
         float drainPerTick = drainPerTick();
         float recoveryPerTick = (float) (double) DeadeyeConfig.ENERGY_RECOVERY_PER_TICK.get();
         int delayTicks = (int) Math.round(DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.get() * 20.0D);
+        boolean infiniteEnergy = DeadeyeConfig.INFINITE_ENERGY.get();
 
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             State state = state(player);
-            if (TimeFlowController.isHolding(player.getUUID())) {
+            if (infiniteEnergy) {
                 state.ticksSinceUse = 0;
-                state.energy = Math.max(0.0F, state.energy - drainPerTick);
+                state.energy = DeadeyeEnergyRules.normalizedEnergy(state.energy, true);
+                TimeFlowController.resumeRequestedHolding(player);
+            } else if (TimeFlowController.isHolding(player.getUUID())) {
+                state.ticksSinceUse = 0;
+                state.energy = DeadeyeEnergyRules.energyAfterDrain(state.energy, drainPerTick, false);
                 if (state.energy <= 0.0F) {
-                    TimeFlowController.setHolding(player, false); // exhausted
+                    TimeFlowController.suspendForEnergyExhaustion(player);
                 }
             } else if (state.energy < MAX_ENERGY) {
                 if (++state.ticksSinceUse > delayTicks) {

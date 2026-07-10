@@ -13,8 +13,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -36,8 +34,8 @@ import java.util.UUID;
 public final class TimeFlowController {
     private static final long NORMAL_MS_PER_TICK = 50L;
 
-    /** Players currently holding the Deadeye key. Global slow-mo while non-empty. */
-    private static final Set<UUID> ACTIVE_HOLDERS = new HashSet<>();
+    /** Separates the physical hold request from energy-authorized activation. */
+    private static final DeadeyeHoldState HOLD_STATE = new DeadeyeHoldState();
     private static float activeRate = 1.0F;
     /** Fractional milliseconds carried between ticks so odd rates stay exact. */
     private static float carryMs = 0.0F;
@@ -46,11 +44,11 @@ public final class TimeFlowController {
     }
 
     public static boolean isActive() {
-        return !ACTIVE_HOLDERS.isEmpty();
+        return HOLD_STATE.isAnyActive();
     }
 
     public static boolean isHolding(UUID playerId) {
-        return ACTIVE_HOLDERS.contains(playerId);
+        return HOLD_STATE.isActive(playerId);
     }
 
     /** The rate currently applied (1.0 when inactive). */
@@ -60,20 +58,31 @@ public final class TimeFlowController {
 
     /** Called on the server thread when a player presses or releases the key. */
     public static void setHolding(ServerPlayer player, boolean holding) {
-        if (holding && !DeadeyeEnergyManager.canActivate(player)) {
-            return; // out of energy
-        }
         boolean wasActive = isActive();
-        if (holding) {
-            ACTIVE_HOLDERS.add(player.getUUID());
-        } else {
-            ACTIVE_HOLDERS.remove(player.getUUID());
-        }
+        boolean canActivate = holding && DeadeyeEnergyManager.canActivate(player);
+        HOLD_STATE.setRequested(player.getUUID(), holding, canActivate);
+        applyActiveStateChange(player.serverLevel().getServer(), wasActive);
+    }
+
+    /** Stops an exhausted player's active slowdown without forgetting that the key is still held. */
+    public static void suspendForEnergyExhaustion(ServerPlayer player) {
+        boolean wasActive = isActive();
+        HOLD_STATE.suspend(player.getUUID());
+        applyActiveStateChange(player.serverLevel().getServer(), wasActive);
+    }
+
+    /** Reactivates a physical hold that was suspended by energy exhaustion. */
+    public static void resumeRequestedHolding(ServerPlayer player) {
+        boolean wasActive = isActive();
+        HOLD_STATE.resumeIfRequested(player.getUUID());
+        applyActiveStateChange(player.serverLevel().getServer(), wasActive);
+    }
+
+    private static void applyActiveStateChange(MinecraftServer server, boolean wasActive) {
         if (wasActive == isActive()) {
             return;
         }
 
-        MinecraftServer server = player.serverLevel().getServer();
         if (isActive()) {
             activeRate = (float) (double) DeadeyeConfig.SLOWDOWN_RATE.get();
         } else {
@@ -139,7 +148,7 @@ public final class TimeFlowController {
     }
 
     private static void reset() {
-        ACTIVE_HOLDERS.clear();
+        HOLD_STATE.clear();
         activeRate = 1.0F;
         carryMs = 0.0F;
     }

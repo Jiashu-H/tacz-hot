@@ -42,7 +42,10 @@ public final class DeadeyeClothConfigScreen {
                 .build());
         general.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.energyDuration"),
-                        (int) Math.round(DeadeyeConfig.ENERGY_DURATION_SECONDS.get()), 1, 60)
+                        DeadeyeConfigUiValues.durationSliderValue(
+                                DeadeyeConfig.ENERGY_DURATION_SECONDS.get()),
+                        DeadeyeConfigUiValues.DURATION_MIN,
+                        DeadeyeConfigUiValues.DURATION_MAX)
                 .setDefaultValue(5)
                 .setTextGetter(value -> Component.literal(value + "s"))
                 .setTooltip(
@@ -50,15 +53,29 @@ public final class DeadeyeClothConfigScreen {
                         Component.translatable("config.deadeye.slowdownRate.tooltip2"))
                 .setSaveConsumer(value -> DeadeyeConfig.ENERGY_DURATION_SECONDS.set((double) value))
                 .build());
+        general.addEntry(entries.startBooleanToggle(
+                        Component.translatable("config.deadeye.infiniteEnergy"),
+                        DeadeyeConfig.INFINITE_ENERGY.get())
+                .setDefaultValue(false)
+                .setTooltip(
+                        Component.translatable("config.deadeye.infiniteEnergy.tooltip"),
+                        Component.translatable("config.deadeye.slowdownRate.tooltip2"))
+                .setSaveConsumer(DeadeyeConfig.INFINITE_ENERGY::set)
+                .build());
         general.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.energyRecoveryDelay"),
-                        (int) Math.round(DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.get()), 0, 30)
-                .setDefaultValue(2)
-                .setTextGetter(value -> Component.literal(value + "s"))
+                        DeadeyeConfigUiValues.recoveryDelaySliderValue(
+                                DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.get()),
+                        DeadeyeConfigUiValues.RECOVERY_DELAY_SLIDER_MIN,
+                        DeadeyeConfigUiValues.RECOVERY_DELAY_SLIDER_MAX)
+                .setDefaultValue(8)
+                .setTextGetter(value -> Component.literal(
+                        DeadeyeConfigUiValues.recoveryDelayLabel(value)))
                 .setTooltip(
                         Component.translatable("config.deadeye.energyRecoveryDelay.tooltip"),
                         Component.translatable("config.deadeye.slowdownRate.tooltip2"))
-                .setSaveConsumer(value -> DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.set((double) value))
+                .setSaveConsumer(value -> DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.set(
+                        DeadeyeConfigUiValues.recoveryDelaySeconds(value)))
                 .build());
         general.addEntry(entries.startDoubleField(
                         Component.translatable("config.deadeye.energyRecoveryRate"),

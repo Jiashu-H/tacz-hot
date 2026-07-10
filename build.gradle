@@ -212,6 +212,18 @@ publishing {
     }
 }
 
+tasks.register('logicTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs Deadeye zero-dependency logic regression tests.'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.hjsmc.deadeye.DeadeyeLogicTestSuite'
+}
+
+tasks.named('test', Test).configure {
+    dependsOn tasks.named('logicTest')
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

@@ -9,6 +9,8 @@ public final class DeadeyeConfig {
     public static final ForgeConfigSpec.DoubleValue SLOWDOWN_RATE;
     /** Realtime seconds of slow motion a full energy bar provides. */
     public static final ForgeConfigSpec.DoubleValue ENERGY_DURATION_SECONDS;
+    /** Whether Deadeye energy remains permanently full. */
+    public static final ForgeConfigSpec.BooleanValue INFINITE_ENERGY;
     /** Seconds without using Deadeye before energy starts recovering. */
     public static final ForgeConfigSpec.DoubleValue ENERGY_RECOVERY_DELAY_SECONDS;
     /** Energy percent recovered per server tick once recovery has started. */
@@ -28,6 +30,11 @@ public final class DeadeyeConfig {
                         "How many realtime seconds of slow motion a full (100%) energy bar provides.",
                         "满能量（100%）可持续减速的秒数（按现实时间计）。")
                 .defineInRange("energyDurationSeconds", 5.0D, 0.5D, 600.0D);
+        INFINITE_ENERGY = builder
+                .comment(
+                        "Keep every player's Deadeye energy at 100% and disable energy consumption.",
+                        "使所有玩家的死亡之眼能量保持 100%，并禁用能量消耗。")
+                .define("infiniteEnergy", false);
         ENERGY_RECOVERY_DELAY_SECONDS = builder
                 .comment(
                         "Seconds after the last Deadeye use before energy starts recovering.",

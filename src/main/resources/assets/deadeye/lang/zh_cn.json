@@ -9,6 +9,8 @@
   "config.deadeye.slowdownRate.tooltip2": "多人游戏时以服务端的配置文件为准。",
   "config.deadeye.energyDuration": "满能量减速时长",
   "config.deadeye.energyDuration.tooltip": "满能量（100%）可持续减速的秒数（按现实时间计）。",
+  "config.deadeye.infiniteEnergy": "无限能量",
+  "config.deadeye.infiniteEnergy.tooltip": "开启后所有玩家的能量保持 100%，死亡之眼不会因能量耗尽而停止。",
   "config.deadeye.energyRecoveryDelay": "能量恢复延迟",
   "config.deadeye.energyRecoveryDelay.tooltip": "停止使用后，开始恢复能量前的等待秒数。",
   "config.deadeye.energyRecoveryRate": "能量恢复速度（%/tick）",

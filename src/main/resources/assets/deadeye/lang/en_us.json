@@ -9,6 +9,8 @@
   "config.deadeye.slowdownRate.tooltip2": "On multiplayer servers the server's config file is authoritative.",
   "config.deadeye.energyDuration": "Deadeye Duration (Full Energy)",
   "config.deadeye.energyDuration.tooltip": "Realtime seconds of slow motion a full (100%) energy bar provides.",
+  "config.deadeye.infiniteEnergy": "Infinite Energy",
+  "config.deadeye.infiniteEnergy.tooltip": "Keep every player's energy at 100% so Deadeye never stops from energy exhaustion.",
   "config.deadeye.energyRecoveryDelay": "Energy Recovery Delay",
   "config.deadeye.energyRecoveryDelay.tooltip": "Seconds after the last use before energy starts recovering.",
   "config.deadeye.energyRecoveryRate": "Energy Recovery Rate (%/tick)",
