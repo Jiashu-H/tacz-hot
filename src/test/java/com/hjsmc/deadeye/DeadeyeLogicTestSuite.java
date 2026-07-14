@@ -9,6 +9,7 @@ public final class DeadeyeLogicTestSuite {
 
     public static void main(String[] args) {
         DeadeyeConfigUiValuesTest.main(args);
+        DeadeyeEnergySyncLimiterTest.runAll();
         DeadeyeEnergyRulesTest.main(args);
         DeadeyeHoldStateTest.main(args);
         DeadeyeHudRulesTest.main(args);

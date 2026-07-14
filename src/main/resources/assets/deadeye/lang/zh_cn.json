@@ -16,7 +16,7 @@
   "config.deadeye.energyRecoveryRate": "能量恢复速度（%/tick）",
   "config.deadeye.energyRecoveryRate.tooltip": "恢复阶段每 tick 回复的能量百分比（2.5 即 2 秒回满）。",
   "config.deadeye.energySyncRate": "能量显示同步速率",
-  "config.deadeye.energySyncRate.tooltip": "能量在中间值变化时，每秒最多向客户端同步的次数（1~20）。0% 与 100% 始终立即同步。",
+  "config.deadeye.energySyncRate.tooltip": "中间能量值按墙钟时间计算目标平均同步频率（1~20 次/秒），不依赖服务器 TPS。每 tick 最多发送一个新值；0% 与 100% 立即同步。",
   "config.deadeye.vignetteColor": "渐晕颜色",
   "config.deadeye.vignetteColor.tooltip": "屏幕边缘渐晕、眼睛图案与能量数值的颜色，RRGGBB 十六进制。",
   "config.deadeye.vignetteOpacity": "渐晕不透明度",

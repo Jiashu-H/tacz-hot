@@ -169,7 +169,6 @@ package com.hjsmc.deadeye;
 
 final class DeadeyeEnergySyncLimiter {
     private static final double NANOS_PER_SECOND = 1_000_000_000.0D;
-    private static final double MAX_CARRY_AFTER_SEND = Math.nextDown(1.0D);
 
     private long lastUpdateNanos;
     private double credit;
@@ -207,7 +206,8 @@ final class DeadeyeEnergySyncLimiter {
             return false;
         }
 
-        credit = Math.min(credit - 1.0D, MAX_CARRY_AFTER_SEND);
+        double remainingCredit = credit - 1.0D;
+        credit = remainingCredit < 1.0D ? remainingCredit : 0.0D;
         return true;
     }
 }

@@ -15,7 +15,7 @@ public final class DeadeyeConfig {
     public static final ForgeConfigSpec.DoubleValue ENERGY_RECOVERY_DELAY_SECONDS;
     /** Energy percent recovered per server tick once recovery has started. */
     public static final ForgeConfigSpec.DoubleValue ENERGY_RECOVERY_PER_TICK;
-    /** Max mid-range energy display sync packets per second (server → client). */
+    /** Wall-clock target average for mid-range energy sync packets per second. */
     public static final ForgeConfigSpec.IntValue ENERGY_SYNC_RATE;
 
     static {
@@ -49,9 +49,9 @@ public final class DeadeyeConfig {
                 .defineInRange("energyRecoveryPerTick", 2.5D, 0.01D, 100.0D);
         ENERGY_SYNC_RATE = builder
                 .comment(
-                        "Maximum mid-range energy display sync packets per second while energy is changing.",
-                        "0% and 100% always sync immediately. Higher values make the HUD smoother; lower values save bandwidth.",
-                        "能量在中间值变化时，每秒最多向客户端同步的次数（1~20）。0% 与 100% 始终立即同步。")
+                        "Wall-clock target average and upper bound for mid-range energy display updates per second.",
+                        "At most one fresh value is sent per server tick. 0% and 100% always sync immediately.",
+                        "中间能量值按墙钟时间计算的目标平均同步上限（1~20 次/秒）。每个服务端 tick 最多发送一个新值，0% 与 100% 始终立即同步。")
                 .defineInRange("energySyncRate", 10, 1, 20);
         builder.pop();
         SPEC = builder.build();

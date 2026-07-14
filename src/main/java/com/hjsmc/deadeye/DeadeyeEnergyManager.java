@@ -27,9 +27,9 @@ import java.util.UUID;
  *
  * Everything gameplay-relevant happens here on the server; clients only
  * receive display-sync packets, so editing the client-side copy of the common
- * config cannot cheat the mechanic in multiplayer. Mid-range energy is
- * Mid-range energy sync is throttled by {@code energySyncRate}; 0% and 100%
- * still sync immediately.
+ * config cannot cheat the mechanic in multiplayer. Mid-range energy sync is
+ * wall-clock throttled by {@code energySyncRate}; 0% and 100% still sync
+ * immediately.
  */
 @Mod.EventBusSubscriber(modid = DeadeyeMod.MODID)
 public final class DeadeyeEnergyManager {
@@ -40,7 +40,7 @@ public final class DeadeyeEnergyManager {
         float energy = MAX_ENERGY;
         int ticksSinceUse = Integer.MAX_VALUE / 2;
         float lastSyncedEnergy = MAX_ENERGY;
-        int ticksSinceSync = 0;
+        final DeadeyeEnergySyncLimiter syncLimiter = new DeadeyeEnergySyncLimiter();
     }
 
     private static final Map<UUID, State> STATES = new HashMap<>();
@@ -71,6 +71,7 @@ public final class DeadeyeEnergyManager {
         float recoveryPerTick = (float) (double) DeadeyeConfig.ENERGY_RECOVERY_PER_TICK.get();
         int delayTicks = (int) Math.round(DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS.get() * 20.0D);
         boolean infiniteEnergy = DeadeyeConfig.INFINITE_ENERGY.get();
+        long nowNanos = System.nanoTime();
 
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             State state = state(player);
@@ -89,12 +90,10 @@ public final class DeadeyeEnergyManager {
                     state.energy = Math.min(MAX_ENERGY, state.energy + recoveryPerTick);
                 }
             }
-            state.ticksSinceSync++;
-            int syncInterval = DeadeyeEnergyRules.syncIntervalTicks(DeadeyeConfig.ENERGY_SYNC_RATE.get());
-            if (DeadeyeEnergyRules.shouldSyncEnergy(
-                    state.energy, state.lastSyncedEnergy, state.ticksSinceSync, syncInterval)) {
+            if (state.syncLimiter.shouldSync(
+                    state.energy, state.lastSyncedEnergy, nowNanos,
+                    DeadeyeConfig.ENERGY_SYNC_RATE.get())) {
                 state.lastSyncedEnergy = state.energy;
-                state.ticksSinceSync = 0;
                 DeadeyeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
                         new ClientboundDeadeyeEnergyPacket(state.energy));
             }
@@ -116,7 +115,7 @@ public final class DeadeyeEnergyManager {
         if (event.getEntity() instanceof ServerPlayer player) {
             State state = state(player);
             state.lastSyncedEnergy = state.energy;
-            state.ticksSinceSync = 0;
+            state.syncLimiter.reset(System.nanoTime());
             DeadeyeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
                     new ClientboundDeadeyeEnergyPacket(state.energy));
         }

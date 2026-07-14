@@ -56,9 +56,10 @@ elapsedSeconds * configuredPacketsPerSecond
 ```
 
 to its fractional credit. If intermediate energy changed and credit is at
-least one, it permits one packet and subtracts one credit. Any credit left
-after a long stall is capped below one packet, so future ticks preserve the
-fractional phase without replaying a backlog.
+least one, it permits one packet and subtracts one credit. A normal fractional
+remainder below one packet is preserved. If a long stall leaves one or more
+complete packets of backlog after the send, that backlog is discarded so the
+next tick cannot replay it as a burst.
 
 When energy has not changed, accumulated credit is capped at one packet. This
 allows the next real change to synchronize promptly without banking an
