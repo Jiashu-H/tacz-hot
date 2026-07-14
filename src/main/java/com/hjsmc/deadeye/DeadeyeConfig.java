@@ -51,8 +51,8 @@ public final class DeadeyeConfig {
                 .comment(
                         "Maximum mid-range energy display sync packets per second while energy is changing.",
                         "0% and 100% always sync immediately. Higher values make the HUD smoother; lower values save bandwidth.",
-                        "能量在中间值变化时，每秒最多向客户端同步的次数（1~5）。0% 与 100% 始终立即同步。")
-                .defineInRange("energySyncRate", 5, 1, 5);
+                        "能量在中间值变化时，每秒最多向客户端同步的次数（1~20）。0% 与 100% 始终立即同步。")
+                .defineInRange("energySyncRate", 10, 1, 20);
         builder.pop();
         SPEC = builder.build();
     }

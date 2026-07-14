@@ -90,8 +90,8 @@ public final class DeadeyeClothConfigScreen {
                 .build());
         general.addEntry(entries.startIntSlider(
                         Component.translatable("config.deadeye.energySyncRate"),
-                        DeadeyeConfig.ENERGY_SYNC_RATE.get(), 1, 5)
-                .setDefaultValue(5)
+                        DeadeyeConfig.ENERGY_SYNC_RATE.get(), 1, 20)
+                .setDefaultValue(10)
                 .setTextGetter(value -> Component.literal(value + "/s"))
                 .setTooltip(
                         Component.translatable("config.deadeye.energySyncRate.tooltip"),

@@ -41,14 +41,15 @@ public final class DeadeyeEnergyRulesTest {
         assertEquals(7, DeadeyeEnergyRules.syncIntervalTicks(3));
         assertEquals(5, DeadeyeEnergyRules.syncIntervalTicks(4));
         assertEquals(4, DeadeyeEnergyRules.syncIntervalTicks(5));
-        assertEquals(4, DeadeyeEnergyRules.syncIntervalTicks(DeadeyeEnergyRules.DEFAULT_ENERGY_SYNC_RATE));
+        assertEquals(2, DeadeyeEnergyRules.syncIntervalTicks(10));
+        assertEquals(1, DeadeyeEnergyRules.syncIntervalTicks(20));
+        assertEquals(2, DeadeyeEnergyRules.syncIntervalTicks(DeadeyeEnergyRules.DEFAULT_ENERGY_SYNC_RATE));
     }
 
     private static void midRangeEnergyIsThrottledUntilInterval() {
-        int interval = DeadeyeEnergyRules.syncIntervalTicks(5);
+        int interval = DeadeyeEnergyRules.syncIntervalTicks(10);
         assertFalse(DeadeyeEnergyRules.shouldSyncEnergy(52.5F, 50.0F, 1, interval));
-        assertFalse(DeadeyeEnergyRules.shouldSyncEnergy(55.0F, 50.0F, 3, interval));
-        assertTrue(DeadeyeEnergyRules.shouldSyncEnergy(60.0F, 50.0F, 4, interval));
+        assertTrue(DeadeyeEnergyRules.shouldSyncEnergy(55.0F, 50.0F, 2, interval));
     }
 
     private static void boundaryEnergySyncsImmediately() {
@@ -58,7 +59,7 @@ public final class DeadeyeEnergyRulesTest {
     }
 
     private static void unchangedEnergyNeverSyncs() {
-        int interval = DeadeyeEnergyRules.syncIntervalTicks(5);
+        int interval = DeadeyeEnergyRules.syncIntervalTicks(10);
         assertFalse(DeadeyeEnergyRules.shouldSyncEnergy(50.0F, 50.0F, 100, interval));
         assertFalse(DeadeyeEnergyRules.shouldSyncEnergy(100.0F, 100.0F, 100, interval));
     }

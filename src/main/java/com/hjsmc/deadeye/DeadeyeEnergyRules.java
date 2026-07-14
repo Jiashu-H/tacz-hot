@@ -2,7 +2,9 @@ package com.hjsmc.deadeye;
 
 final class DeadeyeEnergyRules {
     static final float MAX_ENERGY = 100.0F;
-    static final int DEFAULT_ENERGY_SYNC_RATE = 5;
+    static final int DEFAULT_ENERGY_SYNC_RATE = 10;
+    static final int MIN_ENERGY_SYNC_RATE = 1;
+    static final int MAX_ENERGY_SYNC_RATE = 20;
     static final float ENERGY_SYNC_EPSILON = 0.001F;
     private static final int NORMAL_TICKS_PER_SECOND = 20;
 
@@ -22,11 +24,11 @@ final class DeadeyeEnergyRules {
     }
 
     /**
-     * Converts a configured packets-per-second rate (1-5) into the minimum
+     * Converts a configured packets-per-second rate (1-20) into the minimum
      * server-tick gap between mid-range energy display syncs.
      */
     static int syncIntervalTicks(int packetsPerSecond) {
-        int rate = Math.max(1, Math.min(5, packetsPerSecond));
+        int rate = Math.max(MIN_ENERGY_SYNC_RATE, Math.min(MAX_ENERGY_SYNC_RATE, packetsPerSecond));
         return Math.max(1, Math.round(NORMAL_TICKS_PER_SECOND / (float) rate));
     }
 

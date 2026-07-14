@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
  * /deadeye duration      [0.5-600]  - seconds of slow motion from full energy
  * /deadeye recoverydelay [0-600]    - seconds before energy starts recovering
  * /deadeye recoveryrate  [0.01-100] - energy percent recovered per tick
- * /deadeye syncrate      [1-5]      - mid-range energy display sync packets/s
+ * /deadeye syncrate      [1-20]     - mid-range energy display sync packets/s
  * /deadeye energy                   - your current energy
  *
  * Queries are open to everyone; setting values requires permission level 2
@@ -46,7 +46,9 @@ public final class DeadeyeCommands {
                         DeadeyeConfig.ENERGY_RECOVERY_PER_TICK, "commands.deadeye.recoveryrate"))
                 .then(Commands.literal("syncrate")
                         .executes(ctx -> querySyncRate(ctx.getSource()))
-                        .then(Commands.argument("value", IntegerArgumentType.integer(1, 5))
+                        .then(Commands.argument("value", IntegerArgumentType.integer(
+                                        DeadeyeEnergyRules.MIN_ENERGY_SYNC_RATE,
+                                        DeadeyeEnergyRules.MAX_ENERGY_SYNC_RATE))
                                 .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                 .executes(ctx -> setSyncRate(ctx.getSource(),
                                         IntegerArgumentType.getInteger(ctx, "value")))))

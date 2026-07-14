@@ -16,7 +16,7 @@
   "config.deadeye.energyRecoveryRate": "Energy Recovery Rate (%/tick)",
   "config.deadeye.energyRecoveryRate.tooltip": "Energy percent recovered per tick once recovery has started (2.5 = full refill in 2 seconds).",
   "config.deadeye.energySyncRate": "Energy Display Sync Rate",
-  "config.deadeye.energySyncRate.tooltip": "Maximum mid-range energy display updates per second (1-5). 0% and 100% always sync immediately.",
+  "config.deadeye.energySyncRate.tooltip": "Maximum mid-range energy display updates per second (1-20). 0% and 100% always sync immediately.",
   "config.deadeye.vignetteColor": "Vignette Color",
   "config.deadeye.vignetteColor.tooltip": "Color of the screen-edge vignette, the eye icon and the energy text, as RRGGBB hex.",
   "config.deadeye.vignetteOpacity": "Vignette Opacity",
