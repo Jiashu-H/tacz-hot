@@ -1,6 +1,7 @@
 package com.hjsmc.deadeye;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
  * /deadeye duration      [0.5-600]  - seconds of slow motion from full energy
  * /deadeye recoverydelay [0-600]    - seconds before energy starts recovering
  * /deadeye recoveryrate  [0.01-100] - energy percent recovered per tick
+ * /deadeye syncrate      [1-5]      - mid-range energy display sync packets/s
  * /deadeye energy                   - your current energy
  *
  * Queries are open to everyone; setting values requires permission level 2
@@ -42,6 +44,12 @@ public final class DeadeyeCommands {
                         DeadeyeConfig.ENERGY_RECOVERY_DELAY_SECONDS, "commands.deadeye.recoverydelay"))
                 .then(doubleConfigCommand("recoveryrate", "percentPerTick", 0.01D, 100.0D,
                         DeadeyeConfig.ENERGY_RECOVERY_PER_TICK, "commands.deadeye.recoveryrate"))
+                .then(Commands.literal("syncrate")
+                        .executes(ctx -> querySyncRate(ctx.getSource()))
+                        .then(Commands.argument("value", IntegerArgumentType.integer(1, 5))
+                                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                                .executes(ctx -> setSyncRate(ctx.getSource(),
+                                        IntegerArgumentType.getInteger(ctx, "value")))))
                 .then(Commands.literal("energy")
                         .executes(ctx -> queryEnergy(ctx.getSource()))));
     }
@@ -81,6 +89,18 @@ public final class DeadeyeCommands {
         int percent = toPercent(value);
         source.sendSuccess(() -> Component.translatable("commands.deadeye.rate.set", percent), true);
         return percent;
+    }
+
+    private static int querySyncRate(CommandSourceStack source) {
+        int rate = DeadeyeConfig.ENERGY_SYNC_RATE.get();
+        source.sendSuccess(() -> Component.translatable("commands.deadeye.syncrate.query", rate), false);
+        return rate;
+    }
+
+    private static int setSyncRate(CommandSourceStack source, int value) {
+        DeadeyeConfig.ENERGY_SYNC_RATE.set(value);
+        source.sendSuccess(() -> Component.translatable("commands.deadeye.syncrate.set", value), true);
+        return value;
     }
 
     private static int queryEnergy(CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {

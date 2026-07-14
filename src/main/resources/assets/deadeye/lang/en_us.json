@@ -15,6 +15,8 @@
   "config.deadeye.energyRecoveryDelay.tooltip": "Seconds after the last use before energy starts recovering.",
   "config.deadeye.energyRecoveryRate": "Energy Recovery Rate (%/tick)",
   "config.deadeye.energyRecoveryRate.tooltip": "Energy percent recovered per tick once recovery has started (2.5 = full refill in 2 seconds).",
+  "config.deadeye.energySyncRate": "Energy Display Sync Rate",
+  "config.deadeye.energySyncRate.tooltip": "Maximum mid-range energy display updates per second (1-5). 0% and 100% always sync immediately.",
   "config.deadeye.vignetteColor": "Vignette Color",
   "config.deadeye.vignetteColor.tooltip": "Color of the screen-edge vignette, the eye icon and the energy text, as RRGGBB hex.",
   "config.deadeye.vignetteOpacity": "Vignette Opacity",
@@ -41,5 +43,7 @@
   "commands.deadeye.recoverydelay.set": "Energy recovery delay set to %s s",
   "commands.deadeye.recoveryrate.query": "Energy recovery rate: %s%% per tick",
   "commands.deadeye.recoveryrate.set": "Energy recovery rate set to %s%% per tick",
+  "commands.deadeye.syncrate.query": "Energy display sync rate: %s/s",
+  "commands.deadeye.syncrate.set": "Energy display sync rate set to %s/s",
   "commands.deadeye.energy.query": "Your Deadeye energy: %s%%"
 }

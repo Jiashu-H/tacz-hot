@@ -27,7 +27,9 @@ import java.util.UUID;
  *
  * Everything gameplay-relevant happens here on the server; clients only
  * receive display-sync packets, so editing the client-side copy of the common
- * config cannot cheat the mechanic in multiplayer.
+ * config cannot cheat the mechanic in multiplayer. Mid-range energy is
+ * Mid-range energy sync is throttled by {@code energySyncRate}; 0% and 100%
+ * still sync immediately.
  */
 @Mod.EventBusSubscriber(modid = DeadeyeMod.MODID)
 public final class DeadeyeEnergyManager {
@@ -38,6 +40,7 @@ public final class DeadeyeEnergyManager {
         float energy = MAX_ENERGY;
         int ticksSinceUse = Integer.MAX_VALUE / 2;
         float lastSyncedEnergy = MAX_ENERGY;
+        int ticksSinceSync = 0;
     }
 
     private static final Map<UUID, State> STATES = new HashMap<>();
@@ -86,8 +89,12 @@ public final class DeadeyeEnergyManager {
                     state.energy = Math.min(MAX_ENERGY, state.energy + recoveryPerTick);
                 }
             }
-            if (Math.abs(state.energy - state.lastSyncedEnergy) > 0.001F) {
+            state.ticksSinceSync++;
+            int syncInterval = DeadeyeEnergyRules.syncIntervalTicks(DeadeyeConfig.ENERGY_SYNC_RATE.get());
+            if (DeadeyeEnergyRules.shouldSyncEnergy(
+                    state.energy, state.lastSyncedEnergy, state.ticksSinceSync, syncInterval)) {
                 state.lastSyncedEnergy = state.energy;
+                state.ticksSinceSync = 0;
                 DeadeyeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
                         new ClientboundDeadeyeEnergyPacket(state.energy));
             }
@@ -107,8 +114,11 @@ public final class DeadeyeEnergyManager {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            State state = state(player);
+            state.lastSyncedEnergy = state.energy;
+            state.ticksSinceSync = 0;
             DeadeyeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
-                    new ClientboundDeadeyeEnergyPacket(energyOf(player)));
+                    new ClientboundDeadeyeEnergyPacket(state.energy));
         }
     }
 

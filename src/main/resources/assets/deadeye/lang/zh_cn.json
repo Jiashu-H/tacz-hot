@@ -15,6 +15,8 @@
   "config.deadeye.energyRecoveryDelay.tooltip": "停止使用后，开始恢复能量前的等待秒数。",
   "config.deadeye.energyRecoveryRate": "能量恢复速度（%/tick）",
   "config.deadeye.energyRecoveryRate.tooltip": "恢复阶段每 tick 回复的能量百分比（2.5 即 2 秒回满）。",
+  "config.deadeye.energySyncRate": "能量显示同步速率",
+  "config.deadeye.energySyncRate.tooltip": "能量在中间值变化时，每秒最多向客户端同步的次数（1~5）。0% 与 100% 始终立即同步。",
   "config.deadeye.vignetteColor": "渐晕颜色",
   "config.deadeye.vignetteColor.tooltip": "屏幕边缘渐晕、眼睛图案与能量数值的颜色，RRGGBB 十六进制。",
   "config.deadeye.vignetteOpacity": "渐晕不透明度",
@@ -41,5 +43,7 @@
   "commands.deadeye.recoverydelay.set": "能量恢复延迟已设为 %s 秒",
   "commands.deadeye.recoveryrate.query": "能量恢复速度：每 tick %s%%",
   "commands.deadeye.recoveryrate.set": "能量恢复速度已设为每 tick %s%%",
+  "commands.deadeye.syncrate.query": "能量显示同步速率：%s 次/秒",
+  "commands.deadeye.syncrate.set": "能量显示同步速率已设为 %s 次/秒",
   "commands.deadeye.energy.query": "你的死亡之眼能量：%s%%"
 }

@@ -88,6 +88,16 @@ public final class DeadeyeClothConfigScreen {
                         Component.translatable("config.deadeye.slowdownRate.tooltip2"))
                 .setSaveConsumer(DeadeyeConfig.ENERGY_RECOVERY_PER_TICK::set)
                 .build());
+        general.addEntry(entries.startIntSlider(
+                        Component.translatable("config.deadeye.energySyncRate"),
+                        DeadeyeConfig.ENERGY_SYNC_RATE.get(), 1, 5)
+                .setDefaultValue(5)
+                .setTextGetter(value -> Component.literal(value + "/s"))
+                .setTooltip(
+                        Component.translatable("config.deadeye.energySyncRate.tooltip"),
+                        Component.translatable("config.deadeye.slowdownRate.tooltip2"))
+                .setSaveConsumer(DeadeyeConfig.ENERGY_SYNC_RATE::set)
+                .build());
 
         ConfigCategory visuals = builder.getOrCreateCategory(Component.translatable("config.deadeye.category.visuals"));
         visuals.addEntry(entries.startColorField(
